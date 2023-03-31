@@ -5,16 +5,9 @@ config:
   composer_version: '2.0.7'
   via: nginx
   webroot: public
-  database: mysql
+  database: mariadb
   cache: redis
   xdebug: false
-services:
-  db2: # @see https://docs.devwithlando.io/tutorials/mysql.html#configuration
-    type: mysql
-    creds:
-      user: symfony
-      password: symfony
-      database: symfony_test
 tooling:
   phpunit:
     service: appserver
