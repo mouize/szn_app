@@ -3,13 +3,13 @@
 namespace App\UseCase\Command;
 
 use App\Entity\Shop;
-use App\Repository\ORM\ShopRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
 class CreateShopCommandHandler
 {
-    public function __construct(private readonly ShopRepository $shopRepository)
+    public function __construct(private EntityManagerInterface $em)
     {
     }
 
@@ -22,6 +22,6 @@ class CreateShopCommandHandler
         $shop->setAddress($command->address);
         $shop->setManager($command->manager);
 
-        $this->shopRepository->save($shop);
+        $this->em->getRepository(Shop::class)->save($shop);
     }
 }

@@ -3,13 +3,13 @@
 namespace App\UseCase\Command;
 
 use App\Entity\Product;
-use App\Repository\ORM\ProductRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
 class CreateProductCommandHandler
 {
-    public function __construct(private readonly ProductRepository $productRepository)
+    public function __construct(private EntityManagerInterface $em)
     {
     }
 
@@ -19,6 +19,6 @@ class CreateProductCommandHandler
         $product->setName($command->name);
         $product->setPhotoUrl($command->photoUrl);
 
-        $this->productRepository->save($product);
+        $this->em->getRepository(Product::class)->save($product, true);
     }
 }

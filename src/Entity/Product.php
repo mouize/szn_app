@@ -3,9 +3,11 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ORM\ProductRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Product
 {
@@ -15,6 +17,7 @@ class Product
      * @ORM\GeneratedValue()
      *
      * @ORM\Column(type="integer")
+     *
      */
     private $id;
 

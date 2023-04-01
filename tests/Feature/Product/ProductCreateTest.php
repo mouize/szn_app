@@ -2,33 +2,17 @@
 
 namespace App\Tests\Feature\Product;
 
+use App\Document\ProductLog;
 use App\Entity\Product;
-use App\Repository\ORM\ProductRepository;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Tests\Feature\FeatureTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class ProductCreateTest extends WebTestCase
+class ProductCreateTest extends FeatureTestCase
 {
-    private ProductRepository $repository;
-    private KernelBrowser $client;
-
-    protected function setUp(): void
-    {
-        $this->client = static::createClient();
-
-        $kernel = self::bootKernel();
-
-        $this->repository = $kernel->getContainer()
-            ->get('doctrine')
-            ->getManager()
-            ->getRepository(Product::class);
-    }
-
     public function test_create_WHEN_goodParameters_THEN_success(): void
     {
         $payload = [
-            'name' => 'Shop test',
+            'name' => 'Product test',
             'photo_url' => 'photo url test',
         ];
 
@@ -41,9 +25,18 @@ class ProductCreateTest extends WebTestCase
 
         $this->assertEquals(Response::HTTP_CREATED, $this->client->getResponse()->getStatusCode());
         $this->assertEmpty($this->client->getResponse()->getContent());
-        $this->assertEquals(1, $this->repository->count([
+
+        $products = $this->em->getRepository(Product::class)->findBy([
             'name' => $payload['name'],
             'photoUrl' => $payload['photo_url'],
-        ]));
+        ]);
+        $this->assertCount(1, $products);
+
+        //check data saved on mongodb
+        $product = current($products);
+        $productLog = $this->dm->getRepository(ProductLog::class)->findOneBy([
+            'productId' => $product->getId(),
+        ]);
+        $this->assertNotNull($productLog);
     }
 }

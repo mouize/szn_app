@@ -2,36 +2,32 @@
 
 namespace App\UseCase\Command;
 
+use App\Entity\Product;
+use App\Entity\Shop;
 use App\Entity\Stock;
-use App\Repository\ORM\ProductRepository;
-use App\Repository\ORM\ShopRepository;
-use App\Repository\ORM\StockRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
 class SetProductToShopCommandHandler
 {
-    public function __construct(
-        private ShopRepository $shopRepository,
-        private ProductRepository $productRepository,
-        private StockRepository $stockRepository,
-    ) {
+    public function __construct(private EntityManagerInterface $em)
+    {
     }
 
     public function __invoke(SetProductToShopCommand $command)
     {
-        $shop = $this->shopRepository->find($command->shopId);
-        $product = $this->productRepository->find($command->productId);
+        $shop = $this->em->getRepository(Shop::class)->find($command->shopId);
+        $product = $this->em->getRepository(Product::class)->find($command->productId);
 
-        $stock = $this->stockRepository->findOneBy(['shop' => $shop, 'product' => $product]);
+        $stock = $this->em->getRepository(Stock::class)->findOneBy(['shop' => $shop, 'product' => $product]);
         if (null === $stock) {
             $stock = new Stock();
             $stock->setShop($shop);
             $stock->setProduct($product);
         }
-
         $stock->setQuantity($command->quantity);
 
-        $this->stockRepository->save($stock, true);
+        $this->em->getRepository(Stock::class)->save($stock, true);
     }
 }

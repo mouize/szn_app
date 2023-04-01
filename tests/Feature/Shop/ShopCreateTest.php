@@ -3,28 +3,11 @@
 namespace App\Tests\Feature\Shop;
 
 use App\Entity\Shop;
-use App\Repository\ORM\ShopRepository;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Tests\Feature\FeatureTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class ShopCreateTest extends WebTestCase
+class ShopCreateTest extends FeatureTestCase
 {
-    private ShopRepository $repository;
-    private KernelBrowser $client;
-
-    protected function setUp(): void
-    {
-        $this->client = static::createClient();
-
-        $kernel = self::bootKernel();
-
-        $this->repository = $kernel->getContainer()
-            ->get('doctrine')
-            ->getManager()
-            ->getRepository(Shop::class);
-    }
-
     public function test_create_WHEN_goodParameters_THEN_success(): void
     {
         $payload = [
@@ -44,6 +27,6 @@ class ShopCreateTest extends WebTestCase
 
         $this->assertEquals(Response::HTTP_CREATED, $this->client->getResponse()->getStatusCode());
         $this->assertEmpty($this->client->getResponse()->getContent());
-        $this->assertEquals(1, $this->repository->count($payload));
+        $this->assertEquals(1, $this->em->getRepository(Shop::class)->count($payload));
     }
 }
