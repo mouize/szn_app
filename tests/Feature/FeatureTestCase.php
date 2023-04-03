@@ -26,6 +26,9 @@ class FeatureTestCase extends WebTestCase
         $this->dm = $kernel->getContainer()
             ->get('doctrine_mongodb')
             ->getManager();
+
+        //Be sure to have an empty and clean database
+        $this->dm->getClient()->dropDatabase('symfony_test');
     }
 
     protected function tearDown(): void

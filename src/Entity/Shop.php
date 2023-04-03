@@ -6,6 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ORM\ShopRepository")
+ *
+ * @ORM\HasLifecycleCallbacks()
  */
 class Shop
 {
@@ -16,39 +18,39 @@ class Shop
      *
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private string $name;
 
     /**
      * @ORM\Column(type="float")
      */
-    private $latitude;
+    private float $latitude;
 
     /**
      * @ORM\Column(type="float")
      */
-    private $longitude;
+    private float $longitude;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $address;
+    private string $address;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $manager;
+    private string $manager;
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -60,7 +62,7 @@ class Shop
         return $this;
     }
 
-    public function getLatitude(): ?float
+    public function getLatitude(): float
     {
         return $this->latitude;
     }
@@ -72,7 +74,7 @@ class Shop
         return $this;
     }
 
-    public function getLongitude(): ?float
+    public function getLongitude(): float
     {
         return $this->longitude;
     }
@@ -84,7 +86,12 @@ class Shop
         return $this;
     }
 
-    public function getAddress(): ?string
+    public function getLocation(): array
+    {
+        return [$this->getLongitude(), $this->getLatitude()];
+    }
+
+    public function getAddress(): string
     {
         return $this->address;
     }
@@ -96,7 +103,7 @@ class Shop
         return $this;
     }
 
-    public function getManager(): ?string
+    public function getManager(): string
     {
         return $this->manager;
     }
@@ -107,4 +114,5 @@ class Shop
 
         return $this;
     }
+
 }

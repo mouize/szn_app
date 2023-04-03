@@ -8,6 +8,14 @@ config:
   database: mariadb
   cache: redis
   xdebug: false
+services:
+  mongodb:
+    type: mongo
+  appserver:
+    run_as_root:
+      - pecl channel-update pecl.php.net
+      - pecl install mongodb
+      - docker-php-ext-enable mongodb
 tooling:
   phpunit:
     service: appserver

@@ -5,11 +5,12 @@ namespace App\UseCase\Command;
 use App\Entity\Product;
 use App\Entity\Shop;
 use App\Entity\Stock;
+use App\Service\CQSBus\CommandHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
-class SetProductToShopCommandHandler
+class SetProductToShopCommandHandler implements CommandHandler
 {
     public function __construct(private EntityManagerInterface $em)
     {

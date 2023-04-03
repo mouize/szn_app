@@ -3,11 +3,12 @@
 namespace App\UseCase\Command;
 
 use App\Entity\Shop;
+use App\Service\CQSBus\CommandHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
-class CreateShopCommandHandler
+class CreateShopCommandHandler implements CommandHandler
 {
     public function __construct(private EntityManagerInterface $em)
     {

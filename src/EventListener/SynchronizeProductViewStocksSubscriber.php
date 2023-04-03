@@ -2,7 +2,7 @@
 
 namespace App\EventListener;
 
-use App\Document\ProductLog;
+use App\Document\ProductView;
 use App\Entity\Stock;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\Events;
@@ -11,7 +11,7 @@ use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
-class SynchronizeProductLogStocksSubscriber implements EventSubscriberInterface
+class SynchronizeProductViewStocksSubscriber implements EventSubscriberInterface
 {
     private Serializer $serializer;
 
@@ -51,29 +51,35 @@ class SynchronizeProductLogStocksSubscriber implements EventSubscriberInterface
         $product = $entity->getProduct();
         $shop = $entity->getShop();
 
-        $productLog = $this->dm->getRepository(ProductLog::class)->findOneBy([
+        $productView = $this->dm->getRepository(ProductView::class)->findOneBy([
             'productId' => $product->getId()
         ]);
-        if (null === $productLog) {
-            $productLog = new ProductLog();
-            $productLog->setProductId($product->getId());
-            $productLog->setName($product->getName());
-            $productLog->setPhotoUrl($product->getPhotoUrl());
+        if (null === $productView) {
+            $productView = new ProductView();
+            $productView->setProductId($product->getId());
+            $productView->setName($product->getName());
+            $productView->setPhotoUrl($product->getPhotoUrl());
         }
 
-        $shopLogs = $productLog->getShops();
+        $ProductViewShops = $productView->getShops();
 
-        $shopLog = $this->serializer->normalize($shop);
-        $shopLog['quantity'] = $entity->getQuantity();
+        $shopView = $this->serializer->normalize($shop);
+
+        //Would need an appropriate serializer.
+        unset($shopView['longitude'], $shopView['latitude'], $shopView['id']);
+        $shopView['shopId'] = $shop->getId();
+        $shopView['location'] = $shop->getLocation();
+        $shopView['quantity'] = $entity->getQuantity();
+
         //If shops already exists, update it
-        if (false !== ($key = array_search($shop->getId(), array_column($shopLogs, 'id')))) {
-            $shops[$key] = $shopLog;
+        if (false !== ($key = array_search($shop->getId(), array_column($ProductViewShops, 'shopId')))) {
+            $ProductViewShops[$key] = $shopView;
         } else {
-            $shops[] = $shopLog;
+            $ProductViewShops[] = $shopView;
         }
 
-        $productLog->setShops($shops);
+        $productView->setShops($ProductViewShops);
 
-        $this->dm->getRepository(ProductLog::class)->save($productLog, true);
+        $this->dm->getRepository(ProductView::class)->save($productView, true);
     }
 }

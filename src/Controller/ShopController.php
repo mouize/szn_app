@@ -2,24 +2,27 @@
 
 namespace App\Controller;
 
+use App\Service\CQSBus\CommandBus;
+use App\Service\CQSBus\QueryBus;
 use App\UseCase\Command\CreateShopCommand;
 use App\UseCase\Command\SetProductToShopCommand;
+use App\UseCase\Query\SearchShopQuery;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Messenger\MessageBusInterface;
 
 class ShopController extends AbstractFOSRestController
 {
-    public function __construct(private MessageBusInterface $bus)
+    public function __construct(
+        private QueryBus $queryBus,
+        private CommandBus $commandBus,
+    )
     {
     }
 
     /**
      * @Rest\Post("/shops")
-     *
-     * @Rest\View(serializerGroups={"shop"})
      */
     public function create(Request $request): Response
     {
@@ -33,15 +36,13 @@ class ShopController extends AbstractFOSRestController
             $data['manager']
         );
 
-        $this->bus->dispatch($command);
+        $this->commandBus->dispatch($command);
 
         return $this->handleView($this->view(null, Response::HTTP_CREATED));
     }
 
     /**
      * @Rest\Put("/shops/{shopId}/products/{productId}")
-     *
-     * @Rest\View(serializerGroups={"shop"})
      *
      * @Rest\RequestParam(name="stock", requirements="\d+", nullable=false)
      */
@@ -54,8 +55,26 @@ class ShopController extends AbstractFOSRestController
         $quantity = $data['quantity'];
 
         $command = new SetProductToShopCommand($shopId, $productId, $quantity);
-        $this->bus->dispatch($command);
+        $this->commandBus->dispatch($command);
 
         return $this->handleView($this->view(null, Response::HTTP_NO_CONTENT));
+    }
+
+    /**
+     * @Rest\Get("/shops")
+     */
+    public function search(Request $request): Response
+    {
+        $name = $request->get('name');
+        $latitude = $request->get('latitude');
+        $longitude = $request->get('longitude');
+        $distance = $request->get('distance');
+        $page = $request->get('page', 0);
+
+        $shops = $this->queryBus->handle(
+            new SearchShopQuery($name, $latitude, $longitude, $distance, $page, 10)
+        );
+
+        return $this->handleView($this->view($shops, Response::HTTP_OK));
     }
 }

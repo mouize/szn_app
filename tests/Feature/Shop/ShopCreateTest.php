@@ -2,6 +2,7 @@
 
 namespace App\Tests\Feature\Shop;
 
+use App\Document\ShopView;
 use App\Entity\Shop;
 use App\Tests\Feature\FeatureTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,6 +28,12 @@ class ShopCreateTest extends FeatureTestCase
 
         $this->assertEquals(Response::HTTP_CREATED, $this->client->getResponse()->getStatusCode());
         $this->assertEmpty($this->client->getResponse()->getContent());
-        $this->assertEquals(1, $this->em->getRepository(Shop::class)->count($payload));
+
+        $shops = $this->em->getRepository(Shop::class)->findBy($payload);
+        $this->assertCount(1, $shops);
+
+        $shop = current($shops);
+        $shopView = $this->dm->getRepository(ShopView::class)->findOneBy(['shopId' => $shop->getId()]);
+        $this->assertNotNull($shopView);
     }
 }

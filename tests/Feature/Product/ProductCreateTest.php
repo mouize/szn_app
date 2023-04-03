@@ -2,7 +2,7 @@
 
 namespace App\Tests\Feature\Product;
 
-use App\Document\ProductLog;
+use App\Document\ProductView;
 use App\Entity\Product;
 use App\Tests\Feature\FeatureTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,9 +34,9 @@ class ProductCreateTest extends FeatureTestCase
 
         //check data saved on mongodb
         $product = current($products);
-        $productLog = $this->dm->getRepository(ProductLog::class)->findOneBy([
+        $productView = $this->dm->getRepository(ProductView::class)->findOneBy([
             'productId' => $product->getId(),
         ]);
-        $this->assertNotNull($productLog);
+        $this->assertNotNull($productView);
     }
 }

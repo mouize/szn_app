@@ -5,18 +5,15 @@ namespace App\EventListener;
 use App\Entity\Product;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
-use App\Document\ProductLog;
-use App\Repository\ODM\ProductLogRepository;
+use App\Document\ProductView;
+use App\Repository\ODM\ProductViewRepository;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
 
-class SynchronizeProductLogSubscriber implements EventSubscriberInterface
+class SynchronizeProductViewSubscriber implements EventSubscriberInterface
 {
-    private ProductLogRepository $productLogRepository;
-
-    public function __construct(DocumentManager $documentManager,)
+    public function __construct(private DocumentManager $dm,)
     {
-        $this->productLogRepository = $documentManager->getRepository(ProductLog::class);
     }
 
     public function getSubscribedEvents(): array
@@ -41,14 +38,19 @@ class SynchronizeProductLogSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if (null === ($productLog = $this->productLogRepository->findOneBy(['productId' => $entity->getId()]))) {
-            $productLog = new ProductLog();
-            $productLog->setProductId($entity->getId());
+        if (null === ($productView = $this->dm
+                ->getRepository(ProductView::class)
+                ->findOneBy(['productId' => $entity->getId()]))
+        ) {
+            $productView = new ProductView();
+            $productView->setProductId($entity->getId());
         }
 
-        $productLog->setName($entity->getName());
-        $productLog->setPhotoUrl($entity->getPhotoUrl());
+        $productView->setName($entity->getName());
+        $productView->setPhotoUrl($entity->getPhotoUrl());
 
-        $this->productLogRepository->save($productLog, true);
+        $this->dm
+            ->getRepository(ProductView::class)
+            ->save($productView, true);
     }
 }

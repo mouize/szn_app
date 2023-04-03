@@ -3,12 +3,12 @@
 namespace App\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
-use App\Repository\ODM\ProductLogRepository;
+use App\Repository\ODM\ProductViewRepository;
 
 /**
- * @MongoDB\Document(repositoryClass=ProductLogRepository::class)
+ * @MongoDB\Document(repositoryClass=ProductViewRepository::class)
  */
-class ProductLog
+class ProductView
 {
     /**
      * @MongoDB\Id
@@ -18,22 +18,22 @@ class ProductLog
     /**
      * @MongoDB\Field(type="int")
      */
-    private $productId;
+    private int $productId;
 
     /**
      * @MongoDB\Field(type="string")
      */
-    private $name;
+    private string $name;
 
     /**
      * @MongoDB\Field(type="string")
      */
-    private $photoUrl;
+    private string $photoUrl;
 
     /**
      * @MongoDB\Field(type="collection")
      */
-    private $shops = [];
+    private array $shops = [];
 
     public function getId(): int
     {
@@ -45,9 +45,11 @@ class ProductLog
         return $this->productId;
     }
 
-    public function setProductId(int $productId)
+    public function setProductId(int $productId): static
     {
         $this->productId = $productId;
+
+        return $this;
     }
 
 
@@ -56,9 +58,11 @@ class ProductLog
         return $this->name;
     }
 
-    public function setName(string $name): void
+    public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
     }
 
     public function getPhotoUrl(): ?string
@@ -66,9 +70,11 @@ class ProductLog
         return $this->photoUrl;
     }
 
-    public function setPhotoUrl(string $photoUrl): void
+    public function setPhotoUrl(string $photoUrl): static
     {
         $this->photoUrl = $photoUrl;
+
+        return $this;
     }
 
     public function getShops(): ?array
@@ -76,8 +82,10 @@ class ProductLog
         return $this->shops;
     }
 
-    public function setShops(array $shops): void
+    public function setShops(array $shops): static
     {
         $this->shops = $shops;
+
+        return $this;
     }
 }

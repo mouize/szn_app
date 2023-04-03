@@ -17,57 +17,57 @@ class Stock
      *
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Shop", inversedBy="stocks")
      *
      * @ORM\JoinColumn(nullable=false)
      */
-    private $shop;
+    private Shop $shop;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Product", inversedBy="stocks")
      *
      * @ORM\JoinColumn(nullable=false)
      */
-    private $product;
+    private Product $product;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $quantity;
+    private int $quantity;
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getShop(): ?Shop
+    public function getShop(): Shop
     {
         return $this->shop;
     }
 
-    public function setShop(?Shop $shop): static
+    public function setShop(Shop $shop): static
     {
         $this->shop = $shop;
 
         return $this;
     }
 
-    public function getProduct(): ?Product
+    public function getProduct(): Product
     {
         return $this->product;
     }
 
-    public function setProduct(?Product $product): static
+    public function setProduct(Product $product): static
     {
         $this->product = $product;
 
         return $this;
     }
 
-    public function getQuantity(): ?int
+    public function getQuantity(): int
     {
         return $this->quantity;
     }

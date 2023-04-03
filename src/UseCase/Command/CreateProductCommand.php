@@ -2,7 +2,9 @@
 
 namespace App\UseCase\Command;
 
-class CreateProductCommand
+use App\Service\CQSBus\Command;
+
+class CreateProductCommand implements Command
 {
     public function __construct(
         public string $name,

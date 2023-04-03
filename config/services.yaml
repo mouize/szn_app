@@ -30,9 +30,12 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    App\EventListener\SynchronizeProductLogSubscriber:
+    App\EventListener\SynchronizeProductViewSubscriber:
         tags:
             - name: 'doctrine.event_subscriber'
-    App\EventListener\SynchronizeProductLogStocksSubscriber:
+    App\EventListener\SynchronizeShopViewSubscriber:
+        tags:
+            - name: 'doctrine.event_subscriber'
+    App\EventListener\SynchronizeProductViewStocksSubscriber:
         tags:
             - name: 'doctrine.event_subscriber'

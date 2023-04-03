@@ -2,23 +2,25 @@
 
 namespace App\Controller;
 
+use App\Service\CQSBus\CommandBus;
+use App\Service\CQSBus\QueryBus;
 use App\UseCase\Command\CreateProductCommand;
+use App\UseCase\Query\SearchProductQuery;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Messenger\MessageBusInterface;
 
 class ProductController extends AbstractFOSRestController
 {
-    public function __construct(private MessageBusInterface $bus)
-    {
+    public function __construct(
+        private QueryBus $queryBus,
+        private CommandBus $commandBus,
+    ) {
     }
 
     /**
      * @Rest\Post("/products")
-     *
-     * @Rest\View(serializerGroups={"shop"})
      */
     public function create(Request $request): Response
     {
@@ -29,8 +31,24 @@ class ProductController extends AbstractFOSRestController
             $data['photo_url'] ?? null,
         );
 
-        $this->bus->dispatch($command);
+        $this->commandBus->dispatch($command);
 
         return $this->handleView($this->view(null, Response::HTTP_CREATED));
+    }
+
+    /**
+     * @Rest\Get("/products")
+     */
+    public function search(Request $request): Response
+    {
+        $name = $request->get('name');
+        $shops = $request->get('shops', []);
+        $page = $request->get('page', 0);
+
+        $shops = $this->queryBus->handle(
+            new SearchProductQuery($name, $shops, $page, 10),
+        );
+
+        return $this->handleView($this->view($shops, Response::HTTP_OK));
     }
 }

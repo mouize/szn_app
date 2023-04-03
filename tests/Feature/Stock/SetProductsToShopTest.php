@@ -2,7 +2,7 @@
 
 namespace App\Tests\Feature\Stock;
 
-use App\Document\ProductLog;
+use App\Document\ProductView;
 use App\Entity\Product;
 use App\Entity\Shop;
 use App\Entity\Stock;
@@ -13,7 +13,8 @@ class SetProductsToShopTest extends FeatureTestCase
 {
     public function test_addProductsToShop_WHEN_creatingAssociation_THEN_success(): void
     {
-        [$shop, $product] = $this->prepareShopAndProducts();
+        $shop = $this->prepareShop();
+        $product = $this->prepareProduct();
 
         $payload = ['quantity' => 4];
 
@@ -33,20 +34,20 @@ class SetProductsToShopTest extends FeatureTestCase
         $this->assertEquals(4, $stock->getQuantity());
 
         //check data saved on mongodb
-        $productLog = $this->dm->getRepository(ProductLog::class)->findOneBy([
+        $productView = $this->dm->getRepository(ProductView::class)->findOneBy([
             'productId' => $product->getId(),
         ]);
-        $this->dm->refresh($productLog);
+        $this->dm->refresh($productView);
 
-        $shopLog = current($productLog->getShops());
-        $this->assertEquals($shop->getId(), $shopLog['id']);
-        $this->assertEquals(4, $shopLog['quantity']);
+        $ProductViewShops = current($productView->getShops());
+        $this->assertEquals($shop->getId(), $ProductViewShops['shopId']);
+        $this->assertEquals(4, $ProductViewShops['quantity']);
     }
 
     public function test_addProductsToShop_WHEN_updatingAssociation_THEN_success(): void
     {
-        [$shop, $product] = $this->prepareShopAndProducts();
-        //Add a stock
+        $shop = $this->prepareShop();
+        $product = $this->prepareProduct();
         $this->prepareStock($shop, $product);
 
         $stock = $this->em->getRepository(Stock::class)->findOneBy(['shop' => $shop, 'product' => $product]);
@@ -69,25 +70,54 @@ class SetProductsToShopTest extends FeatureTestCase
         $this->assertCount(1, $this->em->getRepository(Stock::class)->findAll());
 
         //Check ProductLog is updated too.
-        $productLog = $this->dm->getRepository(ProductLog::class)->findOneBy([
+        $productView = $this->dm->getRepository(ProductView::class)->findOneBy([
             'productId' => $product->getId(),
         ]);
-        $this->dm->refresh($productLog);
+        $this->dm->refresh($productView);
 
-        $this->assertCount(1, $productLog->getShops());
+        $this->assertCount(1, $productView->getShops());
 
-        $shopLog = current($productLog->getShops());
-        $this->assertEquals($shop->getId(), $shopLog['id']);
-        $this->assertEquals(4, $shopLog['quantity']);
+        $ProductViewShops = current($productView->getShops());
+        $this->assertEquals($shop->getId(), $ProductViewShops['shopId']);
+        $this->assertEquals(4, $ProductViewShops['quantity']);
+    }
+
+    public function test_addProductsToShop_WHEN_manyShopsForAProduct_THEN_success(): void
+    {
+        $i = 1;
+        $shop1 = $this->prepareShop($i++);
+        $shop2 = $this->prepareShop($i++);
+        $product = $this->prepareProduct();
+
+        $this->client->request(
+            method: 'Put',
+            uri: '/api/shops/' . $shop1->getId() . '/products/' . $product->getId(),
+            server: ['CONTENT_TYPE' => 'application/json'],
+            content: json_encode(['quantity' => 1])
+        );
+
+        $this->client->request(
+            method: 'Put',
+            uri: '/api/shops/' . $shop2->getId() . '/products/' . $product->getId(),
+            server: ['CONTENT_TYPE' => 'application/json'],
+            content: json_encode(['quantity' => 2])
+        );
+
+        $productView = $this->dm->getRepository(ProductView::class)->findOneBy([
+            'productId' => $product->getId(),
+        ]);
+        $this->dm->refresh($productView);
+
+        $this->assertCount(2, $productView->getShops());
     }
 
     /*
      * Need to prepare some data first, dunno what are best practice with symfony for that.
      */
-    private function prepareShopAndProducts(): array
+    private function prepareShop(int $id = 0): Shop
     {
         $shop = new Shop();
-        $shop->setName('Shop test');
+        $shop->setName("Shop test #$id");
         $shop->setLatitude('48.8566');
         $shop->setLongitude('2.3522');
         $shop->setAddress('Paris, France');
@@ -95,21 +125,26 @@ class SetProductsToShopTest extends FeatureTestCase
 
         $this->em->getRepository(Shop::class)->save($shop, true);
 
+        return $shop;
+    }
+
+    private function prepareProduct(): Product
+    {
         $product = new Product();
-        $product->setName('Product test');
+        $product->setName("Product test");
         $product->setPhotoUrl('url test');
 
         $this->em->getRepository(Product::class)->save($product, true);
 
-        return [$shop, $product];
+        return $product;
     }
 
-    private function prepareStock(Shop $shop, Product $product): void
+    private function prepareStock(Shop $shop, Product $product, int $quantity = 1): void
     {
         $stock = new Stock();
         $stock->setShop($shop);
         $stock->setProduct($product);
-        $stock->setQuantity(1);
+        $stock->setQuantity($quantity);
 
         $this->em->getRepository(Stock::class)->save($stock, true);
     }

@@ -19,24 +19,24 @@ class Product
      * @ORM\Column(type="integer")
      *
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private string $name;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $photoUrl;
+    private ?string $photoUrl = null;
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -53,7 +53,7 @@ class Product
         return $this->photoUrl;
     }
 
-    public function setPhotoUrl(string $photoUrl): static
+    public function setPhotoUrl(?string $photoUrl): static
     {
         $this->photoUrl = $photoUrl;
 

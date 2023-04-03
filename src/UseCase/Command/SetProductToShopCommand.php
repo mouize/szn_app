@@ -2,7 +2,9 @@
 
 namespace App\UseCase\Command;
 
-class SetProductToShopCommand
+use App\Service\CQSBus\Command;
+
+class SetProductToShopCommand implements Command
 {
     public function __construct(public int $shopId, public int $productId, public int $quantity)
     {
