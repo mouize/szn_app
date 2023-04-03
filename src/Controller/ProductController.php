@@ -38,15 +38,17 @@ class ProductController extends AbstractFOSRestController
 
     /**
      * @Rest\Get("/products")
+     *
+     * @Rest\QueryParam(name="page", requirements="\[1-9]+", nullable=false)
      */
     public function search(Request $request): Response
     {
         $name = $request->get('name');
         $shops = $request->get('shops', []);
-        $page = $request->get('page', 0);
+        $page = $request->get('page', 1);
 
         $shops = $this->queryBus->handle(
-            new SearchProductQuery($name, $shops, $page, 10),
+            new SearchProductQuery($name, $shops, $page - 1, 10),
         );
 
         return $this->handleView($this->view($shops, Response::HTTP_OK));

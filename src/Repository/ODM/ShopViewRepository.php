@@ -41,7 +41,7 @@ class ShopViewRepository extends DocumentRepository
 
         return $qb
             ->limit($limit)
-            ->skip($offset)
+            ->skip($offset * $limit)
             ->getQuery()
             ->execute()
             ->toArray();

@@ -43,8 +43,6 @@ class ShopController extends AbstractFOSRestController
 
     /**
      * @Rest\Put("/shops/{shopId}/products/{productId}")
-     *
-     * @Rest\RequestParam(name="stock", requirements="\d+", nullable=false)
      */
     public function setProductToShop(
         int $shopId,
@@ -69,10 +67,12 @@ class ShopController extends AbstractFOSRestController
         $latitude = $request->get('latitude');
         $longitude = $request->get('longitude');
         $distance = $request->get('distance');
-        $page = $request->get('page', 0);
+        $page = $request->get('page', 1);
+
+        //Need to implement request validation
 
         $shops = $this->queryBus->handle(
-            new SearchShopQuery($name, $latitude, $longitude, $distance, $page, 10)
+            new SearchShopQuery($name, $latitude, $longitude, $distance, $page -1 , 10)
         );
 
         return $this->handleView($this->view($shops, Response::HTTP_OK));

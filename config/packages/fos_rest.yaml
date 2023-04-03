@@ -1,7 +1,7 @@
 # Read the documentation: https://fosrestbundle.readthedocs.io/en/3.x/
 fos_rest:
-#    param_fetcher_listener:  true
-#    allowed_methods_listener:  true
+    param_fetcher_listener:  true
+    allowed_methods_listener:  true
     routing_loader: false
     view:
         view_response_listener: 'force'
@@ -12,8 +12,6 @@ fos_rest:
         rules:
             - { path: '^/api', priorities: [ 'json' ], fallback_format: json }
             - { path: '^/', stop: true }
-#    view:
-#        view_response_listener:  true
 #    exception:
 #        codes:
 #            App\Exception\MyException: 403
