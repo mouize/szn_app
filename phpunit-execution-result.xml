@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="" tests="18" assertions="46" errors="0" warnings="0" failures="0" skipped="0" time="1.880274">
+    <testsuite name="Project Test Suite" tests="18" assertions="46" errors="0" warnings="0" failures="0" skipped="0" time="1.880274">
+      <testsuite name="App\Tests\Feature\Product\ProductCreateTest" file="/app/tests/Feature/Product/ProductCreateTest.php" tests="1" assertions="4" errors="0" warnings="0" failures="0" skipped="0" time="0.529266">
+        <testcase name="test_create_WHEN_goodParameters_THEN_success" class="App\Tests\Feature\Product\ProductCreateTest" classname="App.Tests.Feature.Product.ProductCreateTest" file="/app/tests/Feature/Product/ProductCreateTest.php" line="12" assertions="4" time="0.529266"/>
+      </testsuite>
+      <testsuite name="App\Tests\Feature\Product\ProductListTest" file="/app/tests/Feature/Product/ProductListTest.php" tests="4" assertions="9" errors="0" warnings="0" failures="0" skipped="0" time="0.537805">
+        <testcase name="test_search_WHEN_nofilters_THEN_returnallProducts" class="App\Tests\Feature\Product\ProductListTest" classname="App.Tests.Feature.Product.ProductListTest" file="/app/tests/Feature/Product/ProductListTest.php" line="24" assertions="2" time="0.130003"/>
+        <testcase name="test_search_WHEN_filterByName_THEN_returnSpecificProduct" class="App\Tests\Feature\Product\ProductListTest" classname="App.Tests.Feature.Product.ProductListTest" file="/app/tests/Feature/Product/ProductListTest.php" line="37" assertions="3" time="0.122789"/>
+        <testcase name="test_search_WHEN_filterByShop_THEN_returnProductsPerShop" class="App\Tests\Feature\Product\ProductListTest" classname="App.Tests.Feature.Product.ProductListTest" file="/app/tests/Feature/Product/ProductListTest.php" line="57" assertions="2" time="0.148620"/>
+        <testcase name="test_search_WHEN_filterByMultiple_THEN_returnProductsPerShops" class="App\Tests\Feature\Product\ProductListTest" classname="App.Tests.Feature.Product.ProductListTest" file="/app/tests/Feature/Product/ProductListTest.php" line="73" assertions="2" time="0.136393"/>
+      </testsuite>
+      <testsuite name="App\Tests\Feature\Shop\ShopCreateTest" file="/app/tests/Feature/Shop/ShopCreateTest.php" tests="1" assertions="4" errors="0" warnings="0" failures="0" skipped="0" time="0.066127">
+        <testcase name="test_create_WHEN_goodParameters_THEN_success" class="App\Tests\Feature\Shop\ShopCreateTest" classname="App.Tests.Feature.Shop.ShopCreateTest" file="/app/tests/Feature/Shop/ShopCreateTest.php" line="12" assertions="4" time="0.066127"/>
+      </testsuite>
+      <testsuite name="App\Tests\Feature\Shop\ShopListTest" file="/app/tests/Feature/Shop/ShopListTest.php" tests="6" assertions="12" errors="0" warnings="0" failures="0" skipped="0" time="0.380998">
+        <testsuite name="App\Tests\Feature\Shop\ShopListTest::test_search_WHEN_filters_THEN_returnConcernedShops" tests="6" assertions="12" errors="0" warnings="0" failures="0" skipped="0" time="0.380998">
+          <testcase name="test_search_WHEN_filters_THEN_returnConcernedShops with data set #0" class="App\Tests\Feature\Shop\ShopListTest" classname="App.Tests.Feature.Shop.ShopListTest" file="/app/tests/Feature/Shop/ShopListTest.php" line="14" assertions="2" time="0.049451"/>
+          <testcase name="test_search_WHEN_filters_THEN_returnConcernedShops with data set #1" class="App\Tests\Feature\Shop\ShopListTest" classname="App.Tests.Feature.Shop.ShopListTest" file="/app/tests/Feature/Shop/ShopListTest.php" line="14" assertions="2" time="0.073363"/>
+          <testcase name="test_search_WHEN_filters_THEN_returnConcernedShops with data set #2" class="App\Tests\Feature\Shop\ShopListTest" classname="App.Tests.Feature.Shop.ShopListTest" file="/app/tests/Feature/Shop/ShopListTest.php" line="14" assertions="2" time="0.071677"/>
+          <testcase name="test_search_WHEN_filters_THEN_returnConcernedShops with data set #3" class="App\Tests\Feature\Shop\ShopListTest" classname="App.Tests.Feature.Shop.ShopListTest" file="/app/tests/Feature/Shop/ShopListTest.php" line="14" assertions="2" time="0.071625"/>
+          <testcase name="test_search_WHEN_filters_THEN_returnConcernedShops with data set #4" class="App\Tests\Feature\Shop\ShopListTest" classname="App.Tests.Feature.Shop.ShopListTest" file="/app/tests/Feature/Shop/ShopListTest.php" line="14" assertions="2" time="0.057252"/>
+          <testcase name="test_search_WHEN_filters_THEN_returnConcernedShops with data set #5" class="App\Tests\Feature\Shop\ShopListTest" classname="App.Tests.Feature.Shop.ShopListTest" file="/app/tests/Feature/Shop/ShopListTest.php" line="14" assertions="2" time="0.057630"/>
+        </testsuite>
+      </testsuite>
+      <testsuite name="App\Tests\Feature\Stock\SetProductsToShopTest" file="/app/tests/Feature/Stock/SetProductsToShopTest.php" tests="3" assertions="14" errors="0" warnings="0" failures="0" skipped="0" time="0.345568">
+        <testcase name="test_addProductsToShop_WHEN_creatingAssociation_THEN_success" class="App\Tests\Feature\Stock\SetProductsToShopTest" classname="App.Tests.Feature.Stock.SetProductsToShopTest" file="/app/tests/Feature/Stock/SetProductsToShopTest.php" line="14" assertions="5" time="0.129690"/>
+        <testcase name="test_addProductsToShop_WHEN_updatingAssociation_THEN_success" class="App\Tests\Feature\Stock\SetProductsToShopTest" classname="App.Tests.Feature.Stock.SetProductsToShopTest" file="/app/tests/Feature/Stock/SetProductsToShopTest.php" line="47" assertions="8" time="0.099022"/>
+        <testcase name="test_addProductsToShop_WHEN_manyShopsForAProduct_THEN_success" class="App\Tests\Feature\Stock\SetProductsToShopTest" classname="App.Tests.Feature.Stock.SetProductsToShopTest" file="/app/tests/Feature/Stock/SetProductsToShopTest.php" line="85" assertions="1" time="0.116855"/>
+      </testsuite>
+      <testsuite name="App\Tests\Unit\CQSBus\MessengerCommandBusTest" file="/app/tests/Unit/CQSBus/MessengerCommandBusTest.php" tests="2" assertions="2" errors="0" warnings="0" failures="0" skipped="0" time="0.019947">
+        <testcase name="testWHENNewInstanceTHENHasInterface" class="App\Tests\Unit\CQSBus\MessengerCommandBusTest" classname="App.Tests.Unit.CQSBus.MessengerCommandBusTest" file="/app/tests/Unit/CQSBus/MessengerCommandBusTest.php" line="24" assertions="1" time="0.012355"/>
+        <testcase name="testWHENDispatchTHENMessageBusHandleIsExpected" class="App\Tests\Unit\CQSBus\MessengerCommandBusTest" classname="App.Tests.Unit.CQSBus.MessengerCommandBusTest" file="/app/tests/Unit/CQSBus/MessengerCommandBusTest.php" line="30" assertions="1" time="0.007592"/>
+      </testsuite>
+      <testsuite name="App\Tests\Unit\CQSBus\MessengerQueryBusTest" file="/app/tests/Unit/CQSBus/MessengerQueryBusTest.php" tests="1" assertions="1" errors="0" warnings="0" failures="0" skipped="0" time="0.000563">
+        <testcase name="testWHENNewInstanceTHENHasInterface" class="App\Tests\Unit\CQSBus\MessengerQueryBusTest" classname="App.Tests.Unit.CQSBus.MessengerQueryBusTest" file="/app/tests/Unit/CQSBus/MessengerQueryBusTest.php" line="12" assertions="1" time="0.000563"/>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>
