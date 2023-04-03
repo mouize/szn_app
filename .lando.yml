@@ -7,11 +7,12 @@ config:
   webroot: public
   database: mariadb
   cache: redis
-  xdebug: false
+  xdebug: true
 services:
   mongodb:
     type: mongo
   appserver:
+    xdebug: "debug,coverage"
     run_as_root:
       - pecl channel-update pecl.php.net
       - pecl install mongodb
