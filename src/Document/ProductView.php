@@ -70,7 +70,7 @@ class ProductView
         return $this->photoUrl;
     }
 
-    public function setPhotoUrl(string $photoUrl): static
+    public function setPhotoUrl(?string $photoUrl): static
     {
         $this->photoUrl = $photoUrl;
 

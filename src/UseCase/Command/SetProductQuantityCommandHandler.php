@@ -10,13 +10,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
-class SetProductToShopCommandHandler implements CommandHandler
+class SetProductQuantityCommandHandler implements CommandHandler
 {
     public function __construct(private EntityManagerInterface $em)
     {
     }
 
-    public function __invoke(SetProductToShopCommand $command)
+    public function __invoke(SetProductQuantityCommand $command)
     {
         $shop = $this->em->getRepository(Shop::class)->find($command->shopId);
         $product = $this->em->getRepository(Product::class)->find($command->productId);

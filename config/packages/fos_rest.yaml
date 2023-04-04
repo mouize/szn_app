@@ -12,9 +12,9 @@ fos_rest:
         rules:
             - { path: '^/api', priorities: [ 'json' ], fallback_format: json }
             - { path: '^/', stop: true }
-#    exception:
-#        codes:
-#            App\Exception\MyException: 403
+    exception:
+        codes:
+           App\RequestValidator\Exception\RequestValidationException: 400
 #        messages:
 #            App\Exception\MyException: Forbidden area.
 #    format_listener:

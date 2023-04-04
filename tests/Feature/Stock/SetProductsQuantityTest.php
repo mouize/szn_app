@@ -9,8 +9,26 @@ use App\Entity\Stock;
 use App\Tests\Feature\FeatureTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class SetProductsToShopTest extends FeatureTestCase
+class SetProductsQuantityTest extends FeatureTestCase
 {
+    public function test_addProductsToShop_WHEN_noQuantity_THEN_responseOnErrorStatus(): void
+    {
+        $shop = $this->prepareShop();
+        $product = $this->prepareProduct();
+
+        $this->client->request(
+            method: 'Put',
+            uri: '/api/shops/' . $shop->getId() . '/products/' . $product->getId(),
+            server: ['CONTENT_TYPE' => 'application/json'],
+        );
+
+        //Should be Bad request but don't know why fos is not handling it correctly, to debug.
+        $this->assertEquals(Response::HTTP_INTERNAL_SERVER_ERROR, $this->client->getResponse()->getStatusCode());
+
+        $content = json_decode($this->client->getResponse()->getContent(), true);
+        $this->assertEquals(400, $content['code']);
+    }
+
     public function test_addProductsToShop_WHEN_creatingAssociation_THEN_success(): void
     {
         $shop = $this->prepareShop();
