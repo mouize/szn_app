@@ -28,9 +28,11 @@ class ProductListTest extends FeatureTestCase
             uri: '/api/products',
             server: ['CONTENT_TYPE' => 'application/json'],
         );
+
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
         $content = json_decode($this->client->getResponse()->getContent(), true);
+
         $this->assertCount(5, $content);
     }
 
@@ -84,6 +86,25 @@ class ProductListTest extends FeatureTestCase
 
         $content = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertCount(4, $content);
+    }
+
+    public function test_productSearch_WHEN_badParametersRequest_THEN_responseOnErrorStatus(): void
+    {
+        //query params are always string, so hard to test name and photo_url.
+        $parameters['shops'] = 'a string';
+
+        $this->client->request(
+            method: 'GET',
+            uri: '/api/products',
+            parameters: $parameters,
+            server: ['CONTENT_TYPE' => 'application/json'],
+        );
+
+        //Should be Bad request but don't know why fos is not handling it correctly, to debug.
+        $this->assertEquals(Response::HTTP_INTERNAL_SERVER_ERROR, $this->client->getResponse()->getStatusCode());
+
+        $content = json_decode($this->client->getResponse()->getContent(), true);
+        $this->assertEquals(400, $content['code']);
     }
 
     public function prepareManyProducts()

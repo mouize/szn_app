@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\RequestValidator\ProductCreateRequestValidator;
+use App\RequestValidator\ProductSearchRequestValidator;
 use App\Service\CQSBus\CommandBus;
 use App\Service\CQSBus\QueryBus;
 use App\UseCase\Command\CreateProductCommand;
@@ -22,8 +24,10 @@ class ProductController extends AbstractFOSRestController
     /**
      * @Rest\Post("/products")
      */
-    public function create(Request $request): Response
+    public function create(Request $request, ProductCreateRequestValidator $validator): Response
     {
+        $validator->validate();
+
         $data = json_decode($request->getContent(), true);
 
         $command = new CreateProductCommand(
@@ -38,11 +42,11 @@ class ProductController extends AbstractFOSRestController
 
     /**
      * @Rest\Get("/products")
-     *
-     * @Rest\QueryParam(name="page", requirements="\[1-9]+", nullable=false)
      */
-    public function search(Request $request): Response
+    public function search(Request $request, ProductSearchRequestValidator $validator): Response
     {
+        $validator->validate();
+
         $name = $request->get('name');
         $shops = $request->get('shops', []);
         $page = $request->get('page', 1);

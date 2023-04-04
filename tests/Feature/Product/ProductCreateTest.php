@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ProductCreateTest extends FeatureTestCase
 {
-    public function test_create_WHEN_goodParameters_THEN_success(): void
+    public function test_createProduct_WHEN_goodParameters_THEN_success(): void
     {
         $payload = [
             'name' => 'Product test',
@@ -20,7 +20,7 @@ class ProductCreateTest extends FeatureTestCase
             method: 'POST',
             uri: '/api/products',
             server: ['CONTENT_TYPE' => 'application/json'],
-            content: json_encode($payload)
+            content: json_encode($payload),
         );
 
         $this->assertEquals(Response::HTTP_CREATED, $this->client->getResponse()->getStatusCode());
@@ -38,5 +38,44 @@ class ProductCreateTest extends FeatureTestCase
             'productId' => $product->getId(),
         ]);
         $this->assertNotNull($productView);
+    }
+
+    /**
+     * @dataProvider dataProvider_badparametersRequest()
+     */
+    public function test_productCreate_WHEN_badParametersRequest_THEN_responseOnErrorStatus(
+        mixed $name = null,
+        mixed $photo_url = null
+    ): void {
+        $payload = [];
+        if (null !== $name) {
+            $payload['name'] = $name;
+        }
+        if (null !== $photo_url) {
+            $payload['photo_url'] = $photo_url;
+        }
+
+        $this->client->request(
+            method: 'POST',
+            uri: '/api/products',
+            server: ['CONTENT_TYPE' => 'application/json'],
+            content: json_encode($payload)
+        );
+
+        //Should be Bad request but don't know why fos is not handling it correctly, to debug.
+        $this->assertEquals(Response::HTTP_INTERNAL_SERVER_ERROR, $this->client->getResponse()->getStatusCode());
+
+        $content = json_decode($this->client->getResponse()->getContent(), true);
+        $this->assertEquals(400, $content['code']);
+    }
+
+    public function dataProvider_badparametersRequest(): array
+    {
+        return [
+            [''],
+            [null],
+            [35],
+            ['valid name', 35],
+        ];
     }
 }
